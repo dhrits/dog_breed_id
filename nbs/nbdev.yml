@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "dog_breed_id"
+  site-url: "https://dhrits.github.io/dog_breed_id"
+  description: "Repo for dog breed identification experiments"
+  repo-branch: main
+  repo-url: "https://github.com/dhrits/dog_breed_id"
