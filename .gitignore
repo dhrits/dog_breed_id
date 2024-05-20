@@ -3,5 +3,6 @@
 kaggle.json
 venv
 data
+*__pycache__
 *.zip
 *.tar
