@@ -55,3 +55,5 @@ fastparquet==0.8.1
 pycoco==0.7.2
 notebook==7.2.0
 git+https://github.com/ppwwyyxx/cocoapi.git#egg=pycocotools&subdirectory=PythonAPI
+git+https://github.com/fastai/course22p2
+
