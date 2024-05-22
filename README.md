@@ -11,4 +11,6 @@ pip install dog_breed_id
 ```
 
 ## How to use
- This project attempts to build a simple dog breed detector and classifier. It is built off of [nbdev](https://nbdev.fast.ai/), a tool used to build libraries using Jupyter notebooks. At first, please take a look at `nbs/02_data_preprocessing.ipynb` for scripts related to data preprocessing and data exploration. The notebook explores both Stanford dogs and Tsinghua datasets and combines them into a single dataset which can be utilized for training a model. It also preprocesses the two datasets and stores them in COCO format as well as a dataframe for ease of model training. 
+ This project attempts to build a simple dog breed detector and classifier. It is built off of [nbdev](https://nbdev.fast.ai/), a tool used to build libraries using Jupyter notebooks. At first, please take a look at `nbs/02_data_preprocessing.ipynb` for scripts related to data preprocessing and data exploration. The notebook explores both Stanford dogs and Tsinghua datasets and combines them into a single dataset which can be utilized for training a model. It also preprocesses the two datasets and stores them in COCO format as well as a dataframe for ease of model training.
+
+The preproessed dataset is extremely large and is thus [uploaded to S3](https://dsagar-springboard-capstone-data.s3.us-east-2.amazonaws.com/preprocessed-data/data.tar.gz). To use it, please download it in the root of the repo before executing `nbs/02_data_preprocessing.ipynb`
