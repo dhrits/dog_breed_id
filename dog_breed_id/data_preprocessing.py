@@ -3,7 +3,8 @@
 # %% auto 0
 __all__ = ['get_format_from', 'get_annotations_path_from', 'get_bboxes', 'annotated_image', 'get_breedname', 'resize_bboxes',
            'save_resized', 'get_resized_bboxes', 'plot_random_images', 'get_cat_id_mappings', 'get_image_id_mappings',
-           'get_cats_json', 'get_images_json', 'bbox_to_coco', 'coco_to_bbox', 'get_annotations_json', 'to_coco']
+           'get_cats_json', 'get_images_json', 'bbox_to_coco', 'coco_to_bbox', 'get_annotations_json', 'to_coco',
+           'read_csv_with_array_columns']
 
 # %% ../nbs/02_data_preprocessing.ipynb 5
 import cv2
@@ -287,3 +288,15 @@ def to_coco(dataroot, ims2ids, cats2ids):
         'images': images,
         'annotations': annotations
     }
+
+# %% ../nbs/02_data_preprocessing.ipynb 51
+def read_csv_with_array_columns(csv_path, array_columns):
+    """
+    csv_path -  Path to csv to read
+    array_columns - list of columns storing np arrays
+    """
+    import pandas as pd
+    df = pd.read_csv(csv_path)
+    for array_column in array_columns:
+        df[array_column] = df[array_column].str.replace('\s+', ',', regex=True).str.replace(r'\[,', '[', regex=True).replace(r',\]', ']', regex=True).apply(eval).apply(np.array)
+    return df
