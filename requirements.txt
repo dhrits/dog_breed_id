@@ -19,7 +19,7 @@ kiwisolver==1.4.5
 matplotlib==3.5.3
 matplotlib-inline==0.1.6
 nbdev==2.3.23
-numpy==1.21.6
+numpy>=1.21.6
 omegaconf==2.3.0
 opencv-python==4.9.0.80
 packaging==24.0
