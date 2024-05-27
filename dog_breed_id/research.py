@@ -16,21 +16,21 @@ from matplotlib import pyplot as plt
 from miniai.datasets import show_images
 import shutil
 
-# %% ../nbs/03_research.ipynb 14
+# %% ../nbs/03_research.ipynb 13
 import torch
 import torchvision
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
 from torchvision.transforms import functional as F
 
-# %% ../nbs/03_research.ipynb 15
+# %% ../nbs/03_research.ipynb 14
 def get_classes_from_frame(df, column=None):
     """gets the ['background'] + the rest of classes from a dataframe `df` with classes in column specified by `column`"""
     if column is None: column = 'category'
     classes = ['background'] + df['category'].unique().tolist()
     return classes
 
-# %% ../nbs/03_research.ipynb 16
+# %% ../nbs/03_research.ipynb 15
 import os
 import torch
 
@@ -79,7 +79,7 @@ def collate_fn(data):
     targets = [item[1] for item in data]
     return images, targets
 
-# %% ../nbs/03_research.ipynb 17
+# %% ../nbs/03_research.ipynb 16
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor, FasterRCNN
 def get_fasterrcnn_model(num_classes):
@@ -88,7 +88,7 @@ def get_fasterrcnn_model(num_classes):
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
     return model
 
-# %% ../nbs/03_research.ipynb 18
+# %% ../nbs/03_research.ipynb 17
 from tqdm.auto import tqdm
 from . import engine
 from .engine import train_one_epoch, evaluate
@@ -152,7 +152,7 @@ def train_faster_rcnn(model, df):
     torch.save(model.state_dict(), 'model-fasterrcnn.pt')
     return model
 
-# %% ../nbs/03_research.ipynb 28
+# %% ../nbs/03_research.ipynb 27
 def plot_evaluate_fasterrcnn_predictions(model, dataset):
     """
     Plots the predictions of the faster-rcnn model and compares
@@ -174,7 +174,7 @@ def plot_evaluate_fasterrcnn_predictions(model, dataset):
     annotated_images = [annotated_image(im, [box]) for im, box in zip(images, boxes)]
     show_images(annotated_images, titles=titles, figsize=(30, 20))
 
-# %% ../nbs/03_research.ipynb 30
+# %% ../nbs/03_research.ipynb 29
 def evaluate_fasterrcnn_classification_accuracy(model, ds):
     device = torch.device('cuda') if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')
     dl = torch.utils.data.DataLoader(ds, batch_size=16, collate_fn=collate_fn)

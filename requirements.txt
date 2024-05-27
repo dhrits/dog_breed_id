@@ -55,6 +55,7 @@ cramjam==2.8.3
 fastparquet==0.8.1
 pycoco==0.7.2
 notebook==7.2.0
+seaborn
 git+https://github.com/ppwwyyxx/cocoapi.git#egg=pycocotools&subdirectory=PythonAPI
 git+https://github.com/dhrits/course22p2
 
