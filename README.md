@@ -11,6 +11,13 @@ pip install dog_breed_id
 ```
 
 ## How to use
+
+### Data Preprocessing
  This project attempts to build a simple dog breed detector and classifier. It is built off of [nbdev](https://nbdev.fast.ai/), a tool used to build libraries using Jupyter notebooks. At first, please take a look at `nbs/02_data_preprocessing.ipynb` for scripts related to data preprocessing and data exploration. The notebook explores both Stanford dogs and Tsinghua datasets and combines them into a single dataset which can be utilized for training a model. It also preprocesses the two datasets and stores them in COCO format as well as a dataframe for ease of model training.
 
 The preproessed dataset is extremely large and is thus [uploaded to S3](https://dsagar-springboard-capstone-data.s3.us-east-2.amazonaws.com/preprocessed-data/data.tar.gz). To use it, please download it in the root of the repo before executing `nbs/02_data_preprocessing.ipynb`
+
+### Reproducing Research
+This repository includes an attempt to reproduce research methods to do object detection and classification. Specifically, I explore [Mask R-CNN](https://arxiv.org/abs/1703.06870) a general framework for object instance segmentation. My problem of dog breed detection is simpler and only involves bounding boxes, but the approach outlined in Mask R-CNN paper is an extension of [Faster RCNN](https://arxiv.org/abs/1506.01497) which is itself the latest in the family of [RCNN (two stage object detectors)](https://medium.com/towards-data-science/exploring-object-detection-with-r-cnn-models-a-comprehensive-beginners-guide-part-2-685bc89775e2) family of detectors. This attempt is located in `nbs/03_research.ipynb`. Please download a subset of the data from [here](https://dsagar-springboard-capstone-data.s3.us-east-2.amazonaws.com/datasubset.tar.gz) to avoid recreating this data. You can download the trained model from [here](https://dsagar-springboard-capstone-data.s3.us-east-2.amazonaws.com/models/model-fasterrcnn.cuda.pt).
+
+Attribution - The code below makes use of the official [PyTorch Object Detection Tutorial](https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html) and several libraries (for computing IOU etc) are taken from it. 
