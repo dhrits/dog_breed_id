@@ -24,10 +24,13 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision.transforms import functional as F
 
 # %% ../nbs/03_research.ipynb 14
-def get_classes_from_frame(df, column=None):
+def get_classes_from_frame(df, column=None, include_background=True):
     """gets the ['background'] + the rest of classes from a dataframe `df` with classes in column specified by `column`"""
     if column is None: column = 'category'
-    classes = ['background'] + df['category'].unique().tolist()
+    if include_background:
+        classes = ['background'] + df['category'].unique().tolist()
+    else:
+        classes = df['category'].unique().tolist()
     return classes
 
 # %% ../nbs/03_research.ipynb 15
