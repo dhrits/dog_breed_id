@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['TRAIN_TRANSFORMS', 'VALID_TRANSFORMS', 'iw', 'DataLoaders', 'get_id_mappings', 'get_class_weights',
            'get_data_subsets', 'DogBreedClassificationDataset', 'freeze_weights', 'init_model', 'RegularizerCB',
-           'get_classification_accuracy']
+           'get_classification_accuracy', 'get_classification_accuracy_ensembled']
 
 # %% ../nbs/04_benchmark.ipynb 4
 from .data_preprocessing import read_csv_with_array_columns
@@ -81,9 +81,6 @@ class DogBreedClassificationDataset(Dataset):
         return self.df.shape[0]
 
     def __getitem__(self, idx):
-        if idx >= df.shape[0]:
-            print("Index out of bounds: ", idx, " length: ", )
-            idx = 0
         item = self.df.iloc[idx]
         img = Image.open(item.image)
         tensor = self.transforms(img)
@@ -134,7 +131,7 @@ class RegularizerCB(Callback):
         param_sum *= self.alpha
         learn.loss += param_sum
 
-# %% ../nbs/04_benchmark.ipynb 36
+# %% ../nbs/04_benchmark.ipynb 38
 def get_classification_accuracy(model, dl):
     device = 'cuda' if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')
     matches = []
@@ -145,6 +142,24 @@ def get_classification_accuracy(model, dl):
         labels = labels.to(device)
         with torch.no_grad():
             logits = model(imgs)
+        preds = logits.argmax(-1)
+        matches.extend((preds == labels).cpu().tolist())
+    return np.mean(matches)
+
+
+def get_classification_accuracy_ensembled(models, dl):
+    models = models if isinstance(models, list) else [models]
+    device = 'cuda' if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')
+    matches = []
+    [model.eval() for model in models]
+    models = [model.to(device) for model in models]
+    for (imgs, labels) in dl:
+        imgs = imgs.to(device)
+        labels = labels.to(device)
+        with torch.no_grad():
+            # Do bagging
+            logits = sum([model(imgs) for model in models])
+            logits = logits/float(len(models))
         preds = logits.argmax(-1)
         matches.extend((preds == labels).cpu().tolist())
     return np.mean(matches)
