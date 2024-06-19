@@ -61,11 +61,11 @@ def infer_class(model, id2label, imgs):
     imgs - float ([0, 1]) tensors in shape N, C, H, W
     """
     device = torch.device('cuda') if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')
+    tensor = torch.nn.functional.interpolate(imgs, (256, 256))
     tfms = torchvision.transforms.Compose([
-            torchvision.transforms.Resize((256, 256)),
             torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
-    tensor = tfms(imgs)
+    tensor = tfms(tensor)
     model = model.eval()
     model = model.to(device)
     with torch.no_grad():
@@ -124,6 +124,6 @@ class DogBreedDetector:
         h, w = tensor.shape[-2:]
         scaler = torch.tensor([w, h, w, h], dtype=torch.float64)
         box = box * scaler
-        crop = tensor[:, int(box[1].item()):int(box[3].item()), int(box[0].item()):int(box[2].item())]
+        crop = tensor[..., int(box[1].item()):int(box[3].item()), int(box[0].item()):int(box[2].item())]
         label = self._infer_class(crop)
         return label, box.numpy()      
