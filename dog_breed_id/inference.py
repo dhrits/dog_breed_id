@@ -50,7 +50,7 @@ def infer_boxes(model, imgs):
     with torch.no_grad():
         preds = model(imgs.to(device))
     h, w = imgs.shape[-2:]
-    divisor = torch.tensor([w, h, w, h], dtype=torch.float64)
+    divisor = torch.tensor([w, h, w, h], dtype=torch.float64).to(device)
     boxes = [p['boxes'][0] for p in preds]
     boxes = [b/divisor for b in boxes] # normalize to 0-1 range
     return boxes
@@ -71,7 +71,7 @@ def infer_class(model, id2label, imgs):
     with torch.no_grad():
         logits = model(tensor.to(device))
     preds = logits.argmax(-1)
-    preds = preds[0]
+    preds = preds[0].cpu()
     return id2label[str(preds.item())]
 
 
@@ -107,7 +107,7 @@ class DogBreedDetector:
         """
         imgr = F.resize(tensor, (256, 256))
         imgr.unsqueeze_(0)
-        return infer_boxes(self.dt, imgr)[0]
+        return infer_boxes(self.dt, imgr)[0].cpu()
 
     def _infer_class(self, tensor):
         """
