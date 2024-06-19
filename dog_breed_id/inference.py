@@ -37,7 +37,6 @@ from torch.optim import lr_scheduler
 from sklearn.model_selection import train_test_split
 import timm
 
-# %% ../nbs/06_inference.ipynb 3
 def infer_boxes(model, imgs):
     """
     imgs - float ([0, 1]) tensors in shape N, C, H, W
@@ -89,7 +88,7 @@ def annotate_prediction(img, prediction):
                    1, (255, 0, 0), 1, cv2.LINE_AA)
     return ann
 
-# %% ../nbs/06_inference.ipynb 4
+# %% ../nbs/06_inference.ipynb 3
 import json
 class DogBreedDetector:
     NUM_CLASSES = 137
