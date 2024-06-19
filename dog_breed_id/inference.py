@@ -61,13 +61,11 @@ def infer_class(model, id2label, imgs):
     imgs - float ([0, 1]) tensors in shape N, C, H, W
     """
     device = torch.device('cuda') if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')
-    print("Shape before resizing", imgs.shape)
     tensor = F.resize(imgs, (256, 256))
     tfms = torchvision.transforms.Compose([
             torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
     tensor = tfms(tensor)
-    print("Shape after resizing", tensor.shape)
     model = model.eval()
     model = model.to(device)
     with torch.no_grad():
