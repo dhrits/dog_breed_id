@@ -62,7 +62,7 @@ def infer_class(model, id2label, imgs):
     """
     device = torch.device('cuda') if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')
     print("Shape before resizing", imgs.shape)
-    tensor = torch.nn.functional.interpolate(imgs, (256, 256))
+    tensor = F.resize(imgs, (256, 256))
     tfms = torchvision.transforms.Compose([
             torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
@@ -107,15 +107,16 @@ class DogBreedDetector:
         """
         tensor - float tensor (0-1 range) shaped C, H, W 
         """
+        tensor = tensor.reshape(1, tensor.shape[-3], tensor.shape[-2], tensor.shape[-1])
         imgr = F.resize(tensor, (256, 256))
-        imgr.unsqueeze_(0)
         return infer_boxes(self.dt, imgr)[0].cpu()
 
     def _infer_class(self, tensor):
         """
         tensor - float tensor (0-1 range) shaped C, H, W 
         """
-        tensor = tensor.unsqueeze(0)
+        tensor = tensor.reshape(1, tensor.shape[-3], tensor.shape[-2], tensor.shape[-1])
+        assert len(tensor.shape) == 4, tensor.shape
         return infer_class(self.clf, self.id2label, tensor)
 
     def __call__(self, img):
