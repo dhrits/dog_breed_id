@@ -70,21 +70,24 @@ def infer_class(model, id2label, imgs):
     model = model.to(device)
     with torch.no_grad():
         logits = model(tensor.to(device))
-    preds = logits.argmax(-1)
-    preds = preds[0].cpu()
-    return id2label[str(preds.item())]
+    probs = torch.nn.functional.softmax(logits, -1)
+    values, indices = probs.max(-1)
+    index = indices[0].cpu()
+    return id2label[str(index.item())], values[0].cpu().item()
 
 
 def annotate_prediction(img, prediction):
     from dog_breed_id.data_preprocessing import annotated_image
     import cv2
-    breed, box = prediction[0], prediction[1]
+    breed, confidence, box = prediction[0], prediction[1], prediction[2]
+    confidence = confidence * 100
     breed = breed.replace('_', ' ').capitalize()
+    label = f'{confidence:.2f}% - {breed}'
     w, h = img.size
     box = [np.clip(box[0], 0, w-1), np.clip(box[1], 0, h-1), np.clip(box[2], 0, w-1), np.clip(box[3], 0, h-1)]
     box = [int(b) for b in box]
     ann = annotated_image(np.array(img), [box])
-    ann = cv2.putText(ann, breed, (box[0]+10, box[3]-10), cv2.FONT_HERSHEY_PLAIN,  
+    ann = cv2.putText(ann, label, (box[0]+10, box[3]-10), cv2.FONT_HERSHEY_PLAIN,  
                    1, (255, 0, 0), 1, cv2.LINE_AA)
     return ann
 
@@ -126,5 +129,5 @@ class DogBreedDetector:
         scaler = torch.tensor([w, h, w, h], dtype=torch.float64)
         box = box * scaler
         crop = tensor[..., int(box[1].item()):int(box[3].item()), int(box[0].item()):int(box[2].item())]
-        label = self._infer_class(crop)
-        return label, box.numpy()      
+        label, confidence = self._infer_class(crop)
+        return label, confidence, box.numpy()      
