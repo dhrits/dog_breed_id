@@ -95,7 +95,7 @@ class DogBreedDetector:
     
     def __init__(self, clf_path, dt_path, id2labelpath, label2idpath):
         self.clf = timm.create_model('resnet50', pretrained=True, num_classes=DogBreedDetector.NUM_CLASSES)
-        self.clf.load_state_dict(torch.load(clf_path))
+        self.clf.load_state_dict(torch.load(clf_path, map_location=torch.device('cpu')))
         self.dt = get_fasterrcnn_model(DogBreedDetector.NUM_CLASSES + 1) # Add one for background class
         self.dt.load_state_dict(torch.load(dt_path, map_location=torch.device('cpu')))
         with open(id2labelpath, 'r') as f: self.id2label = json.load(f)
