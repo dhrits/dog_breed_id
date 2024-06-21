@@ -14,6 +14,7 @@ def process(img):
     img = Image.fromarray(img)
     preds = detector(img)
     label, confidence, box = preds
+    label = label.replace('_', ' ').capitalize()
     annotation = annotate_prediction(img, preds)
     return annotation, label, confidence
 
